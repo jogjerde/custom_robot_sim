@@ -2,11 +2,10 @@
 
 <robot name="mobile_manipulator_robot" xmlns:xacro="http://ros.org/wiki/xacro">
     <xacro:include filename="$(find custom_robot_sim)/urdf/common_macros.xacro" />
-    <!-- <xacro:include filename="$(find custom_robot_sim)/urdf/mobile_manipulator_robot.gazebo.xacro" /> -->
-
-    <gazebo>
+    <xacro:include filename="$(find custom_robot_sim)/urdf/robot_control.gazebo.xacro" />
+    <!-- <gazebo>
         <static>true</static>
-    </gazebo>
+    </gazebo> -->
 
     <xacro:property name="density_pla" value="600" />
 
@@ -102,47 +101,18 @@
     </link>
 
 
-    <!-- REAR LEFT WHEEL -->
+    <!-- BACK RIGHT WHEEL -->
     <!-- ==================================== -->
-    <joint type="continuous" name="rear_left_wheel_joint">
-        <origin xyz="-0.200 0.255 -0.050" rpy="-${pi/2} 0 0"/>
-        <child link="rear_left_wheel_link"/>
-        <parent link="mobile_base_link"/>
-        <axis xyz="0 0 1" rpy="0 0 0"/>
-        <limit effort="1000" velocity="1000"/>
-        <dynamics damping="0.7" friction="1.0"/>
-    </joint>
-
-    <link name="rear_left_wheel_link">
-        <visual>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <geometry>
-                <mesh filename="$(find custom_robot_sim)/meshes/wheel_mesh.stl" />
-            </geometry>
-        </visual>
-        <collision>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <geometry>
-                <cylinder length="0.1" radius="0.1" />
-            </geometry>
-        </collision>
-        <xacro:inertial_cylinder radius="0.1" length="0.1" density="${density_pla}">
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-        </xacro:inertial_cylinder>
-    </link>
-
-    <!-- REAR RIGHT WHEEL -->
-    <!-- ==================================== -->
-    <joint type="continuous" name="rear_right_wheel_joint">
+    <joint type="continuous" name="back_right_wheel_joint">
         <origin xyz="-0.200 -0.255 -0.050" rpy="-${pi/2} 0 0"/>
-        <child link="rear_right_wheel_link"/>
+        <child link="back_right_wheel_link"/>
         <parent link="mobile_base_link"/>
         <axis xyz="0 0 1" rpy="0 0 0"/>
         <limit effort="1000" velocity="1000"/>
         <dynamics damping="0.7" friction="1.0"/>
     </joint>
 
-    <link name="rear_right_wheel_link">
+    <link name="back_right_wheel_link">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
@@ -160,7 +130,38 @@
         </xacro:inertial_cylinder>
     </link>
 
+    <!-- BACK LEFT WHEEL -->
+    <!-- ==================================== -->
+    <joint type="continuous" name="back_left_wheel_joint">
+        <origin xyz="-0.200 0.255 -0.050" rpy="-${pi/2} 0 0"/>
+        <child link="back_left_wheel_link"/>
+        <parent link="mobile_base_link"/>
+        <axis xyz="0 0 1" rpy="0 0 0"/>
+        <limit effort="1000" velocity="1000"/>
+        <dynamics damping="0.7" friction="1.0"/>
+    </joint>
 
+    <link name="back_left_wheel_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="$(find custom_robot_sim)/meshes/wheel_mesh.stl" />
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder length="0.1" radius="0.1" />
+            </geometry>
+        </collision>
+        <xacro:inertial_cylinder radius="0.1" length="0.1" density="${density_pla}">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:inertial_cylinder>
+    </link>
+
+    <!--############################### -->
+    <!-- ROBOTIC ARM -->
+    <!--############################### -->
 
     <!-- ARM BASE -->
     <!-- ==================================== -->
@@ -239,6 +240,7 @@
         </xacro:inertial_cylinder>
     </link>
 
+
     <!-- LINK 2 -->
     <!-- ==================================== -->
     <joint type="revolute" name="link_2_joint">
@@ -252,38 +254,26 @@
 
     <link name="link_2_link">
         <visual>
-            <origin xyz="0 -${0.385/2} 0" rpy="${pi/2} 0 0"/>
+            <origin xyz="0 -${0.270/2} 0" rpy="${pi/2} 0 0"/>
             <geometry>
-                <mesh filename="$(find custom_robot_sim)/meshes/link_1_mesh.stl" />
+                <mesh filename="$(find custom_robot_sim)/meshes/link_2_mesh.stl" />
             </geometry>
         </visual>
         <collision>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <origin xyz="0 -${0.270/2} 0" rpy="${pi/2} 0 0"/>
             <geometry>
-                <cylinder length="0.135" radius="${0.075/2}" />
+                <box size="0.075 0.075 0.27"/>
             </geometry>
         </collision>
-        <collision>
-            <origin xyz="0 -${0.385/2} 0" rpy="${pi/2} 0 0"/>
-            <geometry>
-                <cylinder length="0.305" radius="${0.075/2}" />
-            </geometry>
-        </collision>
-        <collision>
-            <origin xyz="0 -${0.385} 0" rpy="0 0 0"/>
-            <geometry>
-                <cylinder length="0.135" radius="${0.075/2}" />
-            </geometry>
-        </collision>
-        <xacro:inertial_cylinder radius="${0.075/2}" length="0.305" density="${density_pla}">
-            <origin xyz="0 -${0.385/2} 0.0" rpy="${pi/2} 0 0"/>
-        </xacro:inertial_cylinder>
+        <xacro:inertial_box length="0.075" width="0.075" height="0.27" density="${density_pla}">
+            <origin xyz="0 -${0.270/2} 0" rpy="${pi/2} 0 0"/>
+        </xacro:inertial_box>
     </link>
 
     <!-- LINK 3 -->
     <!-- ==================================== -->
     <joint type="revolute" name="link_3_joint">
-        <origin xyz="0 -0.385 0" rpy="0 0 0"/>
+        <origin xyz="0 -0.27 0" rpy="0 0 0"/>
         <child link="link_3_link"/>
         <parent link="link_2_link"/>
         <axis xyz="0 0 1" rpy="0 0 0"/>
@@ -293,9 +283,9 @@
 
     <link name="link_3_link">
         <visual>
-            <origin xyz="0 -${0.385/2} 0" rpy="${pi/2} 0 0"/>
+            <origin xyz="0 -0.115 0" rpy="${pi/2} 0 0"/>
             <geometry>
-                <mesh filename="$(find custom_robot_sim)/meshes/link_1_mesh.stl" />
+                <mesh filename="$(find custom_robot_sim)/meshes/link_3_mesh.stl" />
             </geometry>
         </visual>
         <collision>
@@ -305,21 +295,121 @@
             </geometry>
         </collision>
         <collision>
-            <origin xyz="0 -${0.385/2} 0" rpy="${pi/2} 0 0"/>
+            <origin xyz="0 -${0.115-0.075/2} 0" rpy="${pi/2} 0 0"/>
             <geometry>
-                <cylinder length="0.305" radius="${0.075/2}" />
+                <cylinder length="0.075" radius="${0.075/2}" />
             </geometry>
         </collision>
-        <collision>
-            <origin xyz="0 -${0.385} 0" rpy="0 0 0"/>
-            <geometry>
-                <cylinder length="0.135" radius="${0.075/2}" />
-            </geometry>
-        </collision>
-        <xacro:inertial_cylinder radius="${0.075/2}" length="0.305" density="${density_pla}">
-            <origin xyz="0 -${0.385/2} 0.0" rpy="${pi/2} 0 0"/>
+        <xacro:inertial_cylinder radius="${0.075/2}" length="0.115" density="${density_pla}">
+            <origin xyz="0 -${0.115/2} 0" rpy="${pi/2} 0 0"/>
         </xacro:inertial_cylinder>
     </link>
 
+    <!-- GRIPPER BASE -->
+    <!-- ==================================== -->
+    <joint type="revolute" name="gripper_base_joint">
+        <origin xyz="0.0 -0.115 0.0" rpy="${pi/2} ${pi/2} 0"/>
+        <child link="gripper_base_link"/>
+        <parent link="link_3_link"/>
+        <axis xyz="0 0 1" rpy="0 0 0"/>
+        <limit effort="100" velocity="100" lower="-${pi}" upper="${pi}"/>
+        <dynamics damping="0.7" friction="1.0"/>
+    </joint>
 
-</robot>    
+    <link name="gripper_base_link">
+        <visual>
+            <origin xyz="0 0.0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="$(find custom_robot_sim)/meshes/gripper_base_mesh.stl" scale="0.003 0.0005 0.001"/>
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0 0.0 0.02" rpy="0 0 0"/>
+            <geometry>
+                <cylinder length="0.04" radius="${0.075/2}" />
+            </geometry>
+        </collision>
+        <collision>
+            <origin xyz="0 0.0 0.0475" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.6 0.0375 0.015"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_cylinder radius="${0.075/2}" length="0.04" density="${density_pla}">
+            <origin xyz="0 0 0.02" rpy="0 0 0"/>
+        </xacro:inertial_cylinder>
+    </link>
+
+    <!-- GRIPPER FINGER LEFT -->
+    <!-- ==================================== -->
+    <joint type="prismatic" name="gripper_finger_left_joint">
+        <origin xyz="-0.05 0.0 0.055" rpy="0 ${pi/2} 0"/>
+        <child link="gripper_finger_left_link"/>
+        <parent link="gripper_base_link"/>
+        <axis xyz="0 0 1" rpy="0 0 0"/>
+        <limit effort="1000" velocity="1000" lower="0.0" upper="0.07"/>
+        <dynamics damping="0.7" friction="1.0"/>
+    </joint>
+
+    <link name="gripper_finger_left_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 -${pi/2} 0"/>
+            <geometry>
+                <mesh filename="$(find custom_robot_sim)/meshes/gripper_finger_mesh.stl" scale="0.002 0.0005 0.01"/>
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="-${0.7/2+0.005} 0 -0.07" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.7 0.0375 0.06" />
+            </geometry>
+        </collision>
+        <collision>
+            <origin xyz="-${0.05/2} -${0.0375/2} 0.0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.05 0.0375 0.1" />
+            </geometry>
+        </collision>
+        <xacro:inertial_box length="0.7" width="0.075" height="0.03" density="${density_pla}">
+            <origin xyz="-${0.7/2+0.005} 0 -0.035" rpy="0 0 0"/>
+        </xacro:inertial_box>
+    </link>
+
+
+
+    <!-- GRIPPER FINGER RIGHT , kan være feil på mimic, skal være understrek i stedet for punktum-->
+    <!-- ==================================== -->
+    <joint type="prismatic" name="gripper_finger_right_joint">
+        <mimic joint="gripper_finger_left.joint"/>
+        <origin xyz="0.05 0.0 0.055" rpy="0 ${pi/2} ${pi}"/>
+        <child link="gripper_finger_right_link"/>
+        <parent link="gripper_base_link"/>
+        <axis xyz="0 0 1" rpy="0 0 0"/>
+        <limit effort="1000" velocity="1000" lower="0.0" upper="0.07"/>
+        <dynamics damping="0.7" friction="1.0"/>
+    </joint>
+
+    <link name="gripper_finger_right_link">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 -${pi/2} 0"/>
+            <geometry>
+                <mesh filename="$(find custom_robot_sim)/meshes/gripper_finger_mesh.stl" scale="0.002 0.0005 0.01"/>
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="-${0.7/2+0.005} 0 -0.035*2" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.7 0.0375 0.06" />
+            </geometry>
+        </collision>
+        <collision>
+            <origin xyz="-${0.005/2} -${0.0375/2} 0.0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.005 0.0375/2 0.1" />
+            </geometry>
+        </collision>
+        <xacro:inertial_box length="0.07" width="0.075" height="0.03" density="${density_pla}">
+            <origin xyz="-${0.07/2+0.005} 0 -0.035" rpy="0 0 0"/>
+        </xacro:inertial_box>
+    </link>
+</robot>

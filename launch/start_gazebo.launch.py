@@ -18,13 +18,9 @@ def generate_launch_description():
         description='Use simulation (Gazebo) clock if true'
     )
 
-    #Starting Gazebo
-    gazebo = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([os.path.join(get_package_share_directory('gazebo_ros'), 'launch'), '/gazebo.launch.py']),
-        # launch_arguments={'world': world_file_path}.items()
-    )
+
 
     return LaunchDescription([
         sim_time_arg,
-        gazebo,
+        #gazebo,
     ])

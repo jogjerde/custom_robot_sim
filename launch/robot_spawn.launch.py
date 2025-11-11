@@ -6,9 +6,13 @@ from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
+from launch.actions import ExecuteProcess
+from launch.actions import TimerAction
 
 from launch_ros.actions import Node
 import xacro
+
+
 
 
 def generate_launch_description():
@@ -66,10 +70,35 @@ def generate_launch_description():
             parameters=[
                 {'xacro_file_path': xacro_file_path}
             ])
+    
+# Forsink loading av controllere
+    load_joint_state_broadcaster = TimerAction(
+        period=5.0,
+        actions=[ExecuteProcess(
+            cmd=['ros2', 'control', 'load_controller', '--set-state', 'start', 'joint_state_broadcaster'],
+            output='screen'
+        )]
+    )
+
+    load_mobile_base_controller = TimerAction(
+        period=7.0,
+        actions=[ExecuteProcess(
+            cmd=['ros2', 'control', 'load_controller', '--set-state', 'start', 'mobile_base_controller'],
+            output='screen'
+        )]
+    )
+    #Starting Gazebo
+    gazebo = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([os.path.join(get_package_share_directory('gazebo_ros'), 'launch'), '/gazebo.launch.py']),
+        # launch_arguments={'world': world_file_path}.items()
+    )
 
     return LaunchDescription([
         sim_time_arg,
+        gazebo,
         node_robot_state_publisher,
         spawn_entity,
-        reset_robot_node
+        #reset_robot_node,
+        load_joint_state_broadcaster,
+        load_mobile_base_controller
     ])
