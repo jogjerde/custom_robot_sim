@@ -7,6 +7,9 @@ controller_manager:
 
     mobile_base_controller:
       type: forward_command_controller/ForwardCommandController
+      
+    robot_arm_controller:
+      type: forward_command_controller/ForwardCommandController
 
 mobile_base_controller:
   ros__parameters:
@@ -17,3 +20,15 @@ mobile_base_controller:
       - back_right_wheel_joint
 
     interface_name: velocity
+
+
+robot_arm_controller:
+  ros__parameters:
+    joints:
+      - arm_base_joint
+      - link_1_joint
+      - link_2_joint
+      - link_3_joint
+      - gripper_base_joint
+
+    interface_name: position

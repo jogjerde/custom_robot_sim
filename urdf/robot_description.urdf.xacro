@@ -355,7 +355,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 -${pi/2} 0"/>
             <geometry>
-                <mesh filename="$(find custom_robot_sim)/meshes/gripper_finger_mesh.stl" scale="0.002 0.0005 0.01"/>
+                <mesh filename="$(find custom_robot_sim)/meshes/gripper_finger_mesh.stl" scale="0.002 0.0005 0.005"/>
             </geometry>
         </visual>
         <collision>
@@ -380,7 +380,7 @@
     <!-- GRIPPER FINGER RIGHT , kan være feil på mimic, skal være understrek i stedet for punktum-->
     <!-- ==================================== -->
     <joint type="prismatic" name="gripper_finger_right_joint">
-        <mimic joint="gripper_finger_left.joint"/>
+        <mimic joint="gripper_finger_left_joint"/>
         <origin xyz="0.05 0.0 0.055" rpy="0 ${pi/2} ${pi}"/>
         <child link="gripper_finger_right_link"/>
         <parent link="gripper_base_link"/>
@@ -393,11 +393,11 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 -${pi/2} 0"/>
             <geometry>
-                <mesh filename="$(find custom_robot_sim)/meshes/gripper_finger_mesh.stl" scale="0.002 0.0005 0.01"/>
+                <mesh filename="$(find custom_robot_sim)/meshes/gripper_finger_mesh.stl" scale="0.002 0.0005 0.005"/>
             </geometry>
         </visual>
         <collision>
-            <origin xyz="-${0.7/2+0.005} 0 -0.035*2" rpy="0 0 0"/>
+            <origin xyz="-${0.7/2+0.005} 0 ${-0.035*2}" rpy="0 0 0"/>
             <geometry>
                 <box size="0.7 0.0375 0.06" />
             </geometry>
