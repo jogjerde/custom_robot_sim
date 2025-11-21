@@ -29,16 +29,16 @@ class RobotArmPublisher(Node):
 
         self.current_segment = 0          # 0: 0→1, 1: 1→2
         self.step_in_segment = 0
-        self.steps_per_segment = 30       # ca 3 s per bevegelse (30 * 0.1 s)
+        self.steps_per_segment = 50       # 50 * 0.1 s = ca 5 s per segment
 
-        # Ventetid i plukke-posisjon (dwell time)
+        # Ventetid i plukkeposisjon
         self.holding_at_pick = False
         self.hold_counter = 0
-        self.hold_at_pick_steps = 30      # 30 * 0.1 s = ca 3 s pause
+        self.hold_at_pick_ticks = 120      # 120 ticks * 0.1 s = 12 s pause
 
         self.cmd_msg = Float64MultiArray()
 
-        timer_period = 0.1
+        timer_period = 0.1  # Tick
         self.timer = self.create_timer(timer_period, self.timer_callback)
 
     def clbk_joint_states(self, msg):
@@ -54,16 +54,13 @@ class RobotArmPublisher(Node):
             self.robot_arm_publisher.publish(self.cmd_msg)
             return
 
-        # PAUSE i plukkeposisjon
+        # Pause i plukkeposisjon (pose 1)
         if self.holding_at_pick:
-            self.cmd_msg.data = self.poses[1]  # pose_pick
+            self.cmd_msg.data = self.poses[1]
             self.robot_arm_publisher.publish(self.cmd_msg)
-
             self.hold_counter += 1
-            if self.hold_counter >= self.hold_at_pick_steps:
-                # Ferdig å vente → gå videre til neste segment
+            if self.hold_counter >= self.hold_at_pick_ticks:
                 self.holding_at_pick = False
-                # Nå vil neste kall begynne å interpolere 1→2
             return
 
         # Normal interpolasjon mellom to poser
@@ -71,10 +68,7 @@ class RobotArmPublisher(Node):
         q_goal = self.poses[self.current_segment + 1]
 
         alpha = self.step_in_segment / self.steps_per_segment
-
-        q_cmd = []
-        for qs, qg in zip(q_start, q_goal):
-            q_cmd.append((1.0 - alpha) * qs + alpha * qg)
+        q_cmd = [(1.0 - alpha) * qs + alpha * qg for qs, qg in zip(q_start, q_goal)]
 
         self.cmd_msg.data = q_cmd
         self.robot_arm_publisher.publish(self.cmd_msg)
@@ -90,14 +84,12 @@ class RobotArmPublisher(Node):
                 self.holding_at_pick = True
                 self.hold_counter = 0
 
-
 def main(args=None):
     rclpy.init(args=args)
     robot_arm_node = RobotArmPublisher()
     rclpy.spin(robot_arm_node)
     robot_arm_node.destroy_node()
     rclpy.shutdown()
-
 
 if __name__ == '__main__':
     main()
